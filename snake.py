@@ -1,32 +1,52 @@
-import time
-from turtle import Screen, Turtle
-from snake import Snake
 
-screen = Screen()
-screen.setup(600,600)
-screen.bgcolor("black")
-screen.title("My Snake Game")
-screen.tracer(0)
+from turtle import Turtle
 
-snake = Snake()
+position_list = [(0, 0), (-20, 0), (-40, 0)]
+UP = 90
+DOWN = 270
+LEFT = 180
+RIGHT = 0
 
-screen.listen()
-screen.onkey(snake.up,"Up")
-screen.onkey(snake.down, "Down")
-screen.onkey(snake.left,"Left")
-screen.onkey(snake.right, "Right")
+class Snake:
+    def __init__(self):
+        self.segment = []
+        self.create_snake()
+        self.head = self.segment[0]
+
+    def create_snake(self):
+        for position in position_list:
+            self.add_segment(position)
+
+    def add_segment(self,position):
+        new_segmnet = Turtle("square")
+        new_segmnet.color("white")
+        new_segmnet.penup()
+        new_segmnet.goto(position)
+        self.segment.append(new_segmnet)
+
+    def extend(self):
+        self.add_segment(self.segment[-1].position())
 
 
-screen.update()
+    def move(self,dis_move):
+        for seg_num in range(len(self.segment) - 1, 0, -1):
+            new_x = self.segment[seg_num - 1].xcor()
+            new_y = self.segment[seg_num - 1].ycor()
+            self.segment[seg_num].goto(new_x, new_y)
+        self.segment[0].forward(dis_move)
 
-game_is_on = True
+    def up(self):
+        if self.head.heading() != DOWN:
+            self.segment[0].setheading(UP)
 
-while game_is_on:
-    screen.update()
-    time.sleep((0.1))
-    snake.move(20)
+    def down(self):
+        if self.head.heading() != UP:
+            self.segment[0].setheading(DOWN)
 
+    def left(self):
+        if self.head.heading() != RIGHT:
+            self.segment[0].setheading(LEFT)
 
-
-
-screen.exitonclick()
+    def right(self):
+        if self.head.heading() != LEFT:
+            self.segment[0].setheading(RIGHT)
